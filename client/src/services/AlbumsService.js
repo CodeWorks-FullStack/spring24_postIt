@@ -6,6 +6,13 @@ import { api } from "./AxiosService.js"
 
 
 class AlbumsService {
+  async createAlbum(albumData) {
+    const response = await api.post('api/albums', albumData)
+    console.log('✨📔', response.data);
+    const album = new Album(response.data)
+    AppState.albums.push(album)
+    return album
+  }
   async getAlbumById(albumId) {
     const response = await api.get(`api/albums/${albumId}`)
     console.log('📷🦧', response.data)
