@@ -76,7 +76,7 @@ onBeforeMount(()=>{
         <div class="d-flex justify-content-between">
           <div>
             <span >{{album.category}}</span>
-            <button class="btn btn-danger rounded-pill">archive album <i class="mdi mdi-close-circle"></i></button>
+            <button v-if="album.creatorId == AppState.account?.id" class="btn btn-danger rounded-pill">archive album <i class="mdi mdi-close-circle"></i></button>
           </div>
           <div class="d-flex align-items-center">
             <span class="me-2">{{album.creator.name}}</span>
