@@ -39,5 +39,19 @@
       "}"
     ],
     "scope": "javascript,typescript,javascriptreact,typescriptreact"
-  }
+  },
+  	"collaborator is a stinky word": {
+		"prefix": "col",
+		"body": [
+			"collaborator${0}"
+		],
+		"description": "collaborator is actually a hard word to spell"
+	},
+	"Collaborator is a stinky word": {
+		"prefix": "Col",
+		"body": [
+			"Collaborator${0}"
+		],
+		"description": "Collaborator is actually a hard word to spell"
+	}
 }
