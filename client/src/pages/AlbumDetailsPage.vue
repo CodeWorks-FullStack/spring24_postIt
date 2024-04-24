@@ -8,12 +8,15 @@ import { picturesService } from '../services/PicturesService.js';
 import PictureCard from '../components/PictureCard.vue';
 import PictureForm from '../components/PictureForm.vue';
 import ModalWrapper from '../components/ModalWrapper.vue';
+import { collaboratorsService } from '../services/CollaboratorsService.js';
 
 const route = useRoute()
 
 const album = computed(()=> AppState.activeAlbum)
 const coverImg = computed(()=> `url(${AppState.activeAlbum?.coverImg}`)
 const pictures = computed(()=> AppState.activeAlbumPictures)
+const collaborators = computed(()=> AppState.activeAlbumCollaborators)
+const youAreACollaborator = computed(()=> collaborators.value.find(collaborator => collaborator.accountId == AppState.account?.id)) // this will find whether or not the currently logged in person, is within the array of collaborators
 
 async function getAlbumById(){
   try {
@@ -33,10 +36,30 @@ async function getAlbumPictures(){
   }
 }
 
+async function getAlbumCollaborators(){
+  try {
+    await collaboratorsService.getAlbumCollaborators(route.params.albumId)
+  } catch (error) {
+    Pop.toast("Could not get album collaborators", 'error')
+    console.error(error);
+  }
+}
+
+async function becomeCollaborator(){
+  try {
+    const albumData = {albumId: route.params.albumId}
+    await collaboratorsService.becomeCollaborator(albumData)
+  } catch (error) {
+    Pop.toast("Could not join! 🙎‍♂️", 'error')
+    console.error(error);
+  }
+}
+
 // NOTE works i guess? lets just keep an eye on it
 onBeforeMount(()=>{
   getAlbumById()
   getAlbumPictures()
+  getAlbumCollaborators()
 })
 
 </script>
@@ -68,7 +91,23 @@ onBeforeMount(()=>{
 
     <div class="row my-3">
       <div class="col-3">
-        Album Members
+        <div class="text-info" v-if="youAreACollaborator" >You're a collaborator!</div>
+        <div class="bg-glass rounded p-2 d-flex justify-content-between">
+          <div>
+            <div>{{ album.memberCount }}</div>
+            <div>Collaborators</div>
+          </div>
+          <button v-if="!album.archived && AppState.account != null" :disabled="youAreACollaborator != undefined" class="btn btn-info" title="become a collaborator" @click="becomeCollaborator()" ><i class="mdi mdi-account-plus"></i></button>
+          <button v-else disabled class="btn btn-info" title="Album is archvied"  ><i class="mdi mdi-account-lock"></i></button>
+
+        </div>
+        <div class="row g-1">
+
+          <div v-for="collaborator in collaborators" :key="collaborator.id" class="col-4">
+            <img class="square-image" :src="collaborator.profile.picture" :title="collaborator.profile.name" alt="">
+          </div>
+
+        </div>
       </div>
 
       <div class="col-9">
@@ -86,7 +125,7 @@ onBeforeMount(()=>{
   <ModalWrapper modalId="create-picture-modal">
       <PictureForm/>
   </ModalWrapper>
-  <button class="add-picture-button btn btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#create-picture-modal">Add Picture <i class="mdi mdi-plus"></i></button>
+  <button v-if="!album?.archived && AppState.account != null" class="add-picture-button btn btn-success rounded-pill" data-bs-toggle="modal" data-bs-target="#create-picture-modal">Add Picture <i class="mdi mdi-plus"></i></button>
 </template>
 
 
@@ -95,6 +134,14 @@ onBeforeMount(()=>{
 .profile-img{
   height: 40px;
   width: 40px;
+}
+
+.square-image{
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 8px;
 }
 
 .cover-img{

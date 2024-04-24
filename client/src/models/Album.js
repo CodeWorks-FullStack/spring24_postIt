@@ -9,8 +9,11 @@ export class Album {
     this.coverImg = data.coverImg
     this.category = data.category
     this.creatorId = data.creatorId
-    this.creator = new Account(data.creator)
+    this.archived = data.archived
+    this.creator = data.creator ? new Account(data.creator) : null
     this.createdAt = new Date(data.createdAt)
     this.updatedAt = new Date(data.updatedAt)
+    // NOTE added a virtual
+    this.memberCount = data.memberCount
   }
 }

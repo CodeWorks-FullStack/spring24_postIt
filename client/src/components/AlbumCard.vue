@@ -37,9 +37,15 @@ const borderColor = computed(()=>{
       <div class="card-body p-2 bg-glass rounded text-light">
       <div class="color-border">
         <h4 class="mb-1">{{ album.title }}</h4>
-        <div class="d-flex">
-          <img :src="album.creator.picture" class="profile-img" alt="`A beautiful picture of ${album.creator.name}`">
-          <div class="text-secondary ms-1">{{ album.creator.name }}</div>
+        <div class="d-flex justify-content-between">
+          <div v-if="album.creator" >
+            <img :src="album.creator.picture" class="profile-img" alt="`A beautiful picture of ${album.creator.name}`">
+            <span class="text-secondary ms-1">{{ album.creator.name }}</span>
+          </div>
+          <div v-if="album.memberCount != undefined" >
+            <i class="mdi mdi-account-group"></i>
+            <span>{{ album.memberCount }}</span>
+          </div>
         </div>
       </div>
     </div>
