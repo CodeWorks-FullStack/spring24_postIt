@@ -8,16 +8,16 @@ class AlbumsService {
 
   async createAlbum(albumData) {
     const album = await dbContext.Albums.create(albumData)
-    await album.populate('creator')
+    await album.populate('creator memberCount')
     return album
   }
   async getAlbums() {
-    const albums = await dbContext.Albums.find().populate('creator')
+    const albums = await dbContext.Albums.find().populate('creator memberCount')
     return albums
   }
 
   async getOneById(albumId) {
-    const album = await dbContext.Albums.findById(albumId).populate('creator')
+    const album = await dbContext.Albums.findById(albumId).populate('creator memberCount')
     if (!album) throw new Error(`No album with the id: ${albumId}`)
     return album
   }

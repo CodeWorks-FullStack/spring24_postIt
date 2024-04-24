@@ -17,3 +17,12 @@ AlbumSchema.virtual('creator', {
   foreignField: '_id',
   justOne: true
 })
+
+// NOTE this works a lot like other virtuals but now it's fields are flipped, since it's looking for data matches in a child collection, instead of the reverse, like the creator virtual
+AlbumSchema.virtual('memberCount', {
+  localField: '_id',
+  ref: 'Collaborator',
+  foreignField: 'albumId',
+  justOne: false,
+  count: true
+})
